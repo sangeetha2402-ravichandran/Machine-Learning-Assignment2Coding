@@ -54,13 +54,7 @@ The notebook `MachineLearning1Ass2Coding.ipynb` contains all implementation stag
 
 ## 📊 Results Summary
 
-| Model | Accuracy | AUC | Strength |
-|:-------|:---------:|:---:|:----------|
-| **Random Forest** | Moderate | 0.820 | Balanced baseline |
-| **XGBoost** | High | 0.821 | Best recall & precision |
-| **EBM** | Competitive | **0.839** | Highest interpretability |
 
-**Key Findings**
 - XGBoost achieved the highest recall — best at identifying churners.  
 - EBM achieved the highest AUC and provided the clearest explanations.  
 - Random Forest offered stable baseline performance.  
