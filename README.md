@@ -1,80 +1,75 @@
-# Machine Learning Assignment 2 – Retail Sales Prediction
+# Comparative Evaluation of Churn Prediction Using XGBoost, Random Forest, and EBM
 
 ## 📘 Project Overview
-This project explores predictive modeling on a retail sales dataset using supervised learning algorithms.  
-The aim is to identify key factors affecting product sales and to develop regression models that can accurately estimate the sales based on product and outlet attributes.
+This project investigates customer churn prediction in the telecommunications industry using three supervised learning algorithms:
+- **XGBoost**
+- **Random Forest**
+- **Explainable Boosting Machine (EBM)**
 
-The notebook `MachineLearning1Ass2Coding.ipynb` contains all stages of the workflow — from data cleaning and visualization to model training and performance evaluation.
+The goal is to balance **predictive accuracy**, **interpretability**, and **business relevance**.  
+The notebook `MachineLearning1Ass2Coding.ipynb` contains all implementation stages, while the accompanying report (`MachineLearningAss-SangeethaRavichandran.pdf`) provides theoretical and analytical context.
 
 ---
 
-## 📂 Main Sections of the Notebook
+## 📂 Notebook Structure
 
 ### 1. **Data Cleaning and Preprocessing**
-- Loaded and inspected the raw dataset.
-- Removed exact duplicate rows to ensure unique observations.
-- Converted numerical and categorical data types appropriately.
-- Treated missing values:
-  - Numeric columns filled with median values.
-  - Categorical columns imputed with mode.
-- Identified and removed ID-like columns (e.g., `Item_Identifier`).
-- Applied IQR capping to handle outliers in `Item_Weight`, `Item_Visibility`, and `Item_MRP`.
+- Checked and handled missing, duplicate, and outlier values.  
+- Converted *TotalCharges* to numeric and replaced non-numeric values with the **median**.  
+- Filled missing categorical values with `"Unknown"`.  
+- Removed exact duplicate rows.  
+- Applied **IQR capping** to control outliers in `Tenure`, `MonthlyCharges`, and `TotalCharges`.  
+- Separated numeric and categorical features for correct processing.
 
 ### 2. **Exploratory Data Analysis (EDA)**
-- Univariate, bivariate, and multivariate analysis of key features.
-- Visualized data distributions using histograms, bar charts, and violin plots.
-- Explored relationships between product type, visibility, MRP, outlet type, and sales.
-- Identified key insights such as:
-  - Higher MRP items typically have higher sales.
-  - Outlet size and establishment year influence overall sales.
-  - Certain product categories underperform consistently.
+- Examined feature distributions and churn balance (≈73% non-churn vs 27% churn).  
+- Visualized relationships between tenure, contract type, charges, and churn status.  
+- Identified that month-to-month contracts and higher monthly charges strongly correlate with churn.  
+- Observed a strong positive correlation between `MonthlyCharges` and `TotalCharges`.
 
-### 3. **Feature Engineering**
-- Created new derived features such as:
-  - `Price_per_Weight`
-  - `Visibility_Adjusted`
-  - `Category_Sales_Avg`
-- Encoded categorical features using Label Encoding and One-Hot Encoding.
-- Normalized or scaled numerical features where applicable.
+### 3. **Feature Engineering and Transformation**
+- Created domain-specific features such as:
+  - `Charges_x_Tenure`
+  - `AvgMonthlyChargeByTenure`
+- Applied **StandardScaler** to numeric data and **One-Hot Encoding** to categorical features.  
+- Resolved class imbalance through weighted models instead of oversampling.
 
 ### 4. **Model Development**
-- Implemented and compared multiple regression models:
-  - Linear Regression  
-  - Ridge and Lasso Regression  
-  - ElasticNet  
-  - Random Forest Regressor  
-- Split dataset into training and testing subsets.
-- Evaluated model performance using:
-  - Mean Squared Error (MSE)  
-  - Root Mean Squared Error (RMSE)  
-  - Mean Absolute Error (MAE)  
-  - R² Score
+- Trained and compared:
+  - **Random Forest** – reliable baseline model.  
+  - **XGBoost** – high accuracy and strong performance on imbalanced data.  
+  - **EBM** – interpretable, additive glass-box model.  
+- Used stratified 80/20 train-test split and 5-fold cross-validation.  
+- Evaluated models using:
+  - Accuracy  
+  - Precision, Recall, and F1-Score  
+  - ROC-AUC  
 
-### 5. **Results and Evaluation**
-- Compared performance across all models.
-- Random Forest achieved the highest accuracy and lowest error.
-- Ridge and Lasso models helped identify key regularized coefficients.
-- Model interpretability explored through feature importance ranking.
+### 5. **Interpretability and Counterfactual Analysis**
+- Applied **SHAP** values to XGBoost and Random Forest for feature contribution insights.  
+- Used EBM’s **additive interpretability** for transparent risk analysis.  
+- Conducted **counterfactual “what-if” scenarios** (e.g., lowering monthly charges or extending contract length to reduce churn risk).
 
 ---
 
-## 📊 Result Summary
+## 📊 Results Summary
 
-| Model | RMSE | MAE | R² Score |
-|--------|------|------|-----------|
-| Linear Regression | Moderate | Moderate | Low |
-| Ridge Regression | Improved | Improved | Better stability |
-| Lasso Regression | Slightly reduced error | Good generalization | Moderate |
-| Random Forest | **Lowest error** | **Highest accuracy** | **Best overall** |
+| Model | Accuracy | AUC | Strength |
+|:-------|:---------:|:---:|:----------|
+| **Random Forest** | Moderate | 0.820 | Balanced baseline |
+| **XGBoost** | High | 0.821 | Best recall & precision |
+| **EBM** | Competitive | **0.839** | Highest interpretability |
 
-**Conclusion:**  
-Random Forest outperformed other models for retail sales prediction due to its ability to capture nonlinear patterns and feature interactions.  
-Further improvement could be achieved through hyperparameter tuning and inclusion of external market factors.
+**Key Findings**
+- XGBoost achieved the highest recall — best at identifying churners.  
+- EBM achieved the highest AUC and provided the clearest explanations.  
+- Random Forest offered stable baseline performance.  
+- Main churn drivers: **Contract Type**, **Tenure**, and **MonthlyCharges**.
 
 ---
 
-## ⚙️ Environment & Dependencies
-To run the notebook, install the following Python packages:
+## ⚙️ Environment and Dependencies
+To run the notebook, install:
 
 ```bash
-pip install pandas numpy scikit-learn matplotlib seaborn
+pip install pandas numpy scikit-learn matplotlib seaborn interpret shap
